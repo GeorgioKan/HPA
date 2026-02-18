@@ -1,0 +1,7 @@
+apiVersion: v2
+name: demo-hpa
+description: A Helm chart for Kubernetes
+# Trying to present horizontal pod autoscaler to Michael
+type: application
+version: 0.1.0
+appVersion: "1.0"
