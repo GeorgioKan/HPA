@@ -6,12 +6,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-        {{- include "demo-hpa.selectorLabels" . | nindent 6 }}
+      {{- include "demo-hpa.selectorLabels" . | nindent 6 }}
   
   template:
     metadata:
       labels:
-          {{- include "demo-hpa.selectorLabels" . | nindent 8 }}
+        {{- include "demo-hpa.selectorLabels" . | nindent 8 }}
         
     spec:
       containers:
