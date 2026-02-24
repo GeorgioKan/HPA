@@ -3,7 +3,7 @@ kind: HorizontalPodAutoscaler
 metadata:
     name: {{ include "demo-hpa.fullname" . }}
     labels:
-        {{- include "demo-hpa.labels" . | nindent 4 }}
+        {{- include "demo-hpa.labels" . | nindent 8 }}
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
