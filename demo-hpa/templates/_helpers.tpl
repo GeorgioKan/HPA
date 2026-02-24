@@ -46,7 +46,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "demo-hpa.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "demo-hpa.name" . }}
+app: {{ include "demo-hpa.fullname" . }} 
+app.kubernetes.io/name: {{ include "demo-hpa.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

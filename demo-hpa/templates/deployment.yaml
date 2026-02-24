@@ -6,11 +6,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "demo-hpa.selectorLabels" . | nindent 6 }}
+        {{- include "demo-hpa.selectorLabels" . | nindent 6 }}
+  
   template:
     metadata:
       labels:
-        app: {{ include "demo-hpa.name" . }}
+          {{- include "demo-hpa.selectorLabels" . | nindent 8 }}
+        
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -18,7 +20,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           
           ports:
-              containerPort: {{ .Values.service.port }}
+            - name: http
+              containerPort: 80
               
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

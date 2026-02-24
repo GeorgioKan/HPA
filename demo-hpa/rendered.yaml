@@ -4,12 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: testrel-demo-hpa
-  labels:
-    helm.sh/chart: demo-hpa-0.1.0
-    app.kubernetes.io/name: demo-hpa
-    app.kubernetes.io/instance: testrel
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
+
 spec:
   type: ClusterIP
   ports:
@@ -27,14 +22,11 @@ metadata:
   name: testrel-demo-hpa
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: demo-hpa
-      app.kubernetes.io/instance: testrel
+
   template:
     metadata:
       labels:
-        app: demo-hpa
+        app: demo-hpa 
     spec:
       containers:
         - name: demo-hpa
@@ -42,12 +34,178 @@ spec:
           imagePullPolicy: IfNotPresent
           
           ports:
+            - name: http
               containerPort: 80
               
           resources:
             limits:
-              cpu: 50m
-              memory: 64Mi
-            requests:
               cpu: 100m
               memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+---
+# Source: demo-hpa/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: testrel-demo-hpa
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: testrel-demo-hpa 
+    app.kubernetes.io/name: testrel-demo-hpa
+    app.kubernetes.io/instance: testrel
+---
+# Source: demo-hpa/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testrel-demo-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testrel-demo-hpa 
+      app.kubernetes.io/name: testrel-demo-hpa
+      app.kubernetes.io/instance: testrel
+  
+  template:
+    metadata:
+      labels:
+      app: testrel-demo-hpa 
+      app.kubernetes.io/name: testrel-demo-hpa
+      app.kubernetes.io/instance: testrel
+        
+    spec:
+      containers:
+        - name: demo-hpa
+          image: "nginx:1.1"
+          imagePullPolicy: IfNotPresent
+          
+          ports:
+            - name: http
+              containerPort: 80
+              
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+---
+# Source: demo-hpa/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: testrel2-demo-hpa
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: testrel2-demo-hpa 
+    app.kubernetes.io/name: testrel2-demo-hpa
+    app.kubernetes.io/instance: testrel2
+---
+# Source: demo-hpa/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testrel2-demo-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testrel2-demo-hpa 
+      app.kubernetes.io/name: testrel2-demo-hpa
+      app.kubernetes.io/instance: testrel2
+  
+  template:
+    metadata:
+      labels:
+      app: testrel2-demo-hpa 
+      app.kubernetes.io/name: testrel2-demo-hpa
+      app.kubernetes.io/instance: testrel2
+        
+    spec:
+      containers:
+        - name: demo-hpa
+          image: "nginx:1.1"
+          imagePullPolicy: IfNotPresent
+          
+          ports:
+            - name: http
+              containerPort: 80
+              
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+---
+# Source: demo-hpa/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: testrel2-demo-hpa
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: testrel2-demo-hpa 
+    app.kubernetes.io/name: testrel2-demo-hpa
+    app.kubernetes.io/instance: testrel2
+---
+# Source: demo-hpa/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testrel2-demo-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testrel2-demo-hpa 
+      app.kubernetes.io/name: testrel2-demo-hpa
+      app.kubernetes.io/instance: testrel2
+  
+  template:
+    metadata:
+      labels:
+      app: testrel2-demo-hpa 
+      app.kubernetes.io/name: testrel2-demo-hpa
+      app.kubernetes.io/instance: testrel2
+        
+    spec:
+      containers:
+        - name: demo-hpa
+          image: "nginx:1.1"
+          imagePullPolicy: IfNotPresent
+          
+          ports:
+            - name: http
+              containerPort: 80
+              
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
