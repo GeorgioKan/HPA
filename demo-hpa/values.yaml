@@ -7,8 +7,6 @@ service:
   type: ClusterIP
   port: 80
 
-Release:
-  name: 123
 resources:
   requests:
     cpu: 50m
@@ -17,8 +15,20 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-autoscaling: 
+components:
+  back:
+    enabled: true
+    replicaCount: 1
+    autoscaling:
       enabled: true
       minReplicas: 1
       maxReplicas: 5
       targetCPUUtilizationPercentage: 50 
+  service:
+    enabled: true
+    replicaCount: 1
+    autoscaling: 
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 4
+      targetMemoryUtilizationPercentage: 75

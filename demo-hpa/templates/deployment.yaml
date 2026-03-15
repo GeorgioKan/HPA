@@ -1,28 +1,30 @@
+{{- range $name, $cfg := .Values.components }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "demo-hpa.fullname" . }}
+  name: {{ include "demo-hpa.fullname" $ }}-{{ $name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $.Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "demo-hpa.selectorLabels" . | nindent 6 }}
-  
+      {{- include "demo-hpa.selectorLabels" $ | nindent 6 }}
+      app.kubernetes.io/components: {{ $name }}
   template:
     metadata:
       labels:
-        {{- include "demo-hpa.selectorLabels" . | nindent 8 }}
-        
+        {{- include "demo-hpa.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/components: {{ $name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ $.Chart.Name }}-{{ $name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
           
           ports:
             - name: http
               containerPort: 80
               
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml $.Values.resources | nindent 12 }}
+{{- end }}
           

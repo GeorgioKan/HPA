@@ -1,13 +1,15 @@
+{{- range $name, $cfg := .Values.components }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "demo-hpa.fullname" . }}
-
+  name: {{ include "demo-hpa.fullname" $}}-{{ $name }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ $.Values.service.type }} 
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+    - port: {{ $.Values.service.port }}
+      targetPort: http
       protocol: TCP
   selector:
-    {{- include "demo-hpa.selectorLabels" . | nindent 4 }}
+    {{- include "demo-hpa.selectorLabels" $ | nindent 4 }}
+    app.kubernetes.io/components: {{ $name }}
+{{- end }}

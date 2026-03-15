@@ -1,23 +1,36 @@
+{{- range $name, $cfg := .Values.components }}
+{{- $metrics := list }}
+{{if $cfg.autoscaling.targetCPUUtilizationPercentage }}
+  {{- $metrics = append $metrics (dict "name" "cpu" "averageUtilization" $cfg.autoscaling.targetCPUUtilizationPercentage) }}
+  {{- end }}
+
+{{if $cfg.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- $metrics = append $metrics (dict "name" "memory" "averageUtilization" $cfg.autoscaling.targetMemoryUtilizationPercentage) }}
+  {{- end }}
+
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-    name: {{ include "demo-hpa.fullname" . }}
+    name: {{ include "demo-hpa.fullname" $ }}-{{ $name }}
     labels:
-        {{- include "demo-hpa.labels" . | nindent 8 }}
+        {{- include "demo-hpa.labels" $ | nindent 8 }}
+        app.kubernetes.io/components: {{ $name }}
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: {{ include "demo-hpa.fullname" . }}
+        name: {{ include "demo-hpa.fullname" $ }}-{{ $name }}
 
-    minReplicas: {{ .Values.autoscaling.minReplicas }}
-    maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+    minReplicas: {{ $cfg.autoscaling.minReplicas }}
+    maxReplicas: {{ $cfg.autoscaling.maxReplicas }}
 
     metrics:
+      {{- range $metric := $metrics }}
       - type: Resource
         resource:
-          name: cpu
+          name: {{ $metric.name }}
           target:
             type: Utilization
-            averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-
+            averageUtilization: {{ $metric.averageUtilization }}
+      {{- end }}
+{{- end }}
