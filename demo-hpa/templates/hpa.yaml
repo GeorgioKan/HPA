@@ -1,12 +1,15 @@
 {{- range $name, $cfg := .Values.components }}
-{{- $metrics := list }}
-{{if $cfg.autoscaling.targetCPUUtilizationPercentage }}
-  {{- $metrics = append $metrics (dict "name" "cpu" "averageUtilization" $cfg.autoscaling.targetCPUUtilizationPercentage) }}
-  {{- end }}
+{{- if $cfg.enabled }}
+{{- $defaultAutoscaling := $.Values.autoscaling }}
+{{- $componentAutoscaling := default dict $cfg.autoscaling }}
 
-{{if $cfg.autoscaling.targetMemoryUtilizationPercentage }}
-  {{- $metrics = append $metrics (dict "name" "memory" "averageUtilization" $cfg.autoscaling.targetMemoryUtilizationPercentage) }}
-  {{- end }}
+{{- $enabled := default $defaultAutoscaling.enabled $componentAutoscaling.enabled }}
+{{- if $enabled }}
+{{- $minReplicas := default $defaultAutoscaling.minReplicas $componentAutoscaling.minReplicas }}
+{{- $maxReplicas := default $defaultAutoscaling.maxReplicas $componentAutoscaling.maxReplicas }}
+{{- $metrics := default $defaultAutoscaling.metrics $componentAutoscaling.metrics }}
+
+{{- if and $enabled $metrics}}
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -21,8 +24,8 @@ spec:
         kind: Deployment
         name: {{ include "demo-hpa.fullname" $ }}-{{ $name }}
 
-    minReplicas: {{ $cfg.autoscaling.minReplicas }}
-    maxReplicas: {{ $cfg.autoscaling.maxReplicas }}
+    minReplicas: {{ $minReplicas }}
+    maxReplicas: {{ $maxReplicas }}
 
     metrics:
       {{- range $metric := $metrics }}
@@ -33,4 +36,7 @@ spec:
             type: Utilization
             averageUtilization: {{ $metric.averageUtilization }}
       {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}

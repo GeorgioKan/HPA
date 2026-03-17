@@ -15,20 +15,36 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:  
+    - name: cpu
+      averageUtilization: 70
+
 components:
   back:
     enabled: true
-    replicaCount: 1
     autoscaling:
       enabled: true
       minReplicas: 1
       maxReplicas: 5
-      targetCPUUtilizationPercentage: 50 
+      metrics:
+        - name: cpu
+          averageUtilization: 50
+
   service:
     enabled: true
-    replicaCount: 1
     autoscaling: 
       enabled: true
       minReplicas: 2
       maxReplicas: 4
-      targetMemoryUtilizationPercentage: 75
+      metrics:
+        - name: memory
+          averageUtilization: 75
+
+  front:
+    enabled: true
+    autoscaling:
+      enabled: true

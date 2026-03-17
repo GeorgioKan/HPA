@@ -28,3 +28,4 @@ spec:
             {{- toYaml $.Values.resources | nindent 12 }}
 {{- end }}
           
+          
